@@ -13,6 +13,7 @@ import 'activity1/portfolio_settings_screen.dart';
 import 'activity2/network_monitor_screen.dart';
 import 'activity3/dynamic_throttle_screen.dart';
 import 'activity4/local_mesh_chat_screen.dart';
+import 'activity5/geofence_map_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -275,6 +276,38 @@ class HomeScreen extends StatelessWidget {
                     StatusBadge(
                       label: chat.isBroadcasting ? "ONLINE" : "STANDBY",
                       color: chat.isBroadcasting ? AppTheme.success : Colors.grey,
+                      isSmall: true,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Activity 5
+              ActivityCard(
+                activityNumber: "ACTIVITY 5",
+                tag: "GEOFENCE",
+                title: "Custom Map & Geofencing",
+                description:
+                    "6 hidden spots in Lianga on an OSM map with live geofence entry/exit tracking.",
+                icon: Icons.map_rounded,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const GeofenceMapScreen()),
+                  );
+                },
+                statusWidget: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "6 custom markers • Lianga, SDdS",
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    StatusBadge(
+                      label: "MAP",
+                      color: Color(0xFF0288D1),
                       isSmall: true,
                     ),
                   ],

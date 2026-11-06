@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 enum NetworkType { wifi, cellular, ethernet, offline }
 
@@ -60,19 +58,23 @@ class NetworkMonitorProvider extends ChangeNotifier {
   bool _autoSyncEnabled = false;
   Timer? _autoSyncTimer;
 
-  NetworkType get activeType => _isManualSimulation ? (_simulatedType ?? NetworkType.offline) : _activeType;
+  NetworkType get activeType => _isManualSimulation
+      ? (_simulatedType ?? NetworkType.offline)
+      : _activeType;
   bool get isConnected => activeType != NetworkType.offline;
   bool get isWifi => activeType == NetworkType.wifi;
   bool get isCellular => activeType == NetworkType.cellular;
   bool get isOffline => activeType == NetworkType.offline;
   bool get isManualSimulation => _isManualSimulation;
 
-  List<HandoverEvent> get handoverHistory => List.unmodifiable(_handoverHistory);
+  List<HandoverEvent> get handoverHistory =>
+      List.unmodifiable(_handoverHistory);
   int get handoverCount => _handoverCount;
   DateTime get lastStateChange => _lastStateChange;
 
   List<QueuedRequest> get queue => List.unmodifiable(_queue);
-  List<QueuedRequest> get completedRequests => List.unmodifiable(_completedRequests);
+  List<QueuedRequest> get completedRequests =>
+      List.unmodifiable(_completedRequests);
   int get pendingCount => _queue.where((r) => r.status != 'completed').length;
   bool get isProcessingQueue => _isProcessingQueue;
   bool get autoSyncEnabled => _autoSyncEnabled;
@@ -83,11 +85,14 @@ class NetworkMonitorProvider extends ChangeNotifier {
 
   void _initConnectivityListener() {
     // Initial check
-    _connectivity.checkConnectivity().then((results) {
-      _handleConnectivityChange(results);
-    }).catchError((_) {
-      _updateActiveType(NetworkType.offline, note: "Initial check failed");
-    });
+    _connectivity
+        .checkConnectivity()
+        .then((results) {
+          _handleConnectivityChange(results);
+        })
+        .catchError((_) {
+          _updateActiveType(NetworkType.offline, note: "Initial check failed");
+        });
 
     // Stream listener
     _subscription = _connectivity.onConnectivityChanged.listen((results) {
@@ -163,7 +168,8 @@ class NetworkMonitorProvider extends ChangeNotifier {
       timestamp: DateTime.now(),
       from: oldType,
       to: targetType,
-      note: "Simulated Handover (${oldType.name.toUpperCase()} -> ${targetType.name.toUpperCase()})",
+      note:
+          "Simulated Handover (${oldType.name.toUpperCase()} -> ${targetType.name.toUpperCase()})",
     );
     _handoverHistory.insert(0, event);
     notifyListeners();
@@ -234,9 +240,13 @@ class NetworkMonitorProvider extends ChangeNotifier {
     _isProcessingQueue = true;
     notifyListeners();
 
-    final pending = List<QueuedRequest>.from(_queue.where((r) => r.status != 'completed'));
+    final pending = List<QueuedRequest>.from(
+      _queue.where((r) => r.status != 'completed'),
+    );
     for (final req in pending) {
-      if (isOffline) break; // If network dropped again during recovery, stop and keep in queue
+      if (isOffline) {
+        break; // If network dropped again during recovery, stop and keep in queue
+      }
       await _executeSingleRequest(req);
       await Future.delayed(const Duration(milliseconds: 300));
     }
