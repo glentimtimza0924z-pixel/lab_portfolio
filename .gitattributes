@@ -1,8 +1,3 @@
-/android/* linguist-vendored
-/ios/* linguist-vendored
-/windows/* linguist-vendored
-/linux/* linguist-vendored
-/macos/* linguist-vendored
-/web/* linguist-vendored
-/build/* linguist-vendored
-pubspec.lock linguist-vendored
+* linguist-vendored
+*.dart linguist-vendored=false
+/lib/** linguist-vendored=false
